@@ -1,4 +1,3 @@
-#ifdef ENABLE_GFX_DUMMY
 #include <time.h>
 #include <errno.h>
 
@@ -189,4 +188,3 @@ struct GfxRenderingAPI gfx_dummy_renderer_api = {
     gfx_dummy_renderer_end_frame,
     gfx_dummy_renderer_finish_render
 };
-#endif
