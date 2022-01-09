@@ -490,6 +490,18 @@ Gfx *geo_switch_mario_cap_effect(s32 callContext, struct GraphNode *node, UNUSED
     return NULL;
 }
 
+Gfx *geo_switch_ghost_cap_effect(s32 callContext, struct GraphNode *node, UNUSED Mat4 *c) {
+    struct GraphNodeSwitchCase *switchCase = (struct GraphNodeSwitchCase *) node;
+    struct MarioBodyState *bodyState = &gBodyStates[switchCase->numCases];
+
+    bodyState->modelState = MODEL_STATE_METAL; // MODEL_STATE_NOISE_ALPHA;
+
+    if (callContext == GEO_CONTEXT_RENDER) {
+        switchCase->selectedCase = bodyState->modelState >> 8;
+    }
+    return NULL;
+}
+
 /**
  * Determine whether Mario's head is drawn with or without a cap on.
  * Also sets the visibility of the wing cap wings on or off.
