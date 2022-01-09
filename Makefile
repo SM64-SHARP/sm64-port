@@ -279,7 +279,7 @@ endif
 ifeq ($(TARGET_WEB),1)
   EXE := $(BUILD_DIR)/$(TARGET).html
 else ifeq ($(TARGET_WINDOWS),1)
-  EXE := $(BUILD_DIR)/$(TARGET).exe
+  EXE := $(BUILD_DIR)/sm64_$(VERSION).dll
 else
   EXE := $(BUILD_DIR)/$(TARGET)
 endif
@@ -475,7 +475,7 @@ PYTHON := python3
 # Platform-specific compiler and linker flags
 ifeq ($(TARGET_WINDOWS),1)
   PLATFORM_CFLAGS  := -DTARGET_WINDOWS
-  PLATFORM_LDFLAGS := -lm -lxinput9_1_0 -lole32 -no-pie -mwindows
+  PLATFORM_LDFLAGS := -lm -lxinput9_1_0 -lole32 -no-pie -mwindows -shared
 endif
 ifeq ($(TARGET_LINUX),1)
   PLATFORM_CFLAGS  := -DTARGET_LINUX `pkg-config --cflags libusb-1.0`
