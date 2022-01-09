@@ -100,10 +100,6 @@ void produce_one_frame(void) {
     gfx_end_frame();
 }
 
-static void save_config(void) {
-    configfile_save(CONFIG_FILE);
-}
-
 static void on_fullscreen_changed(bool is_now_fullscreen) {
     configFullscreen = is_now_fullscreen;
 }
@@ -113,9 +109,6 @@ void sm64_init()
     static u64 pool[0x165000/8 / 4 * sizeof(void *)];
     main_pool_init(pool, pool + sizeof(pool) / sizeof(pool[0]));
     gEffectsMemoryPool = mem_pool_init(0x4000, MEMORY_POOL_LEFT);
-
-    configfile_load(CONFIG_FILE);
-    atexit(save_config);
 
     audio_init();
     sound_init();
