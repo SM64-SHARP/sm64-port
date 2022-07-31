@@ -1,7 +1,7 @@
 # Makefile to rebuild SM64 split image
 
 include util.mk
-
+	
 # Default target
 default: all
 
@@ -28,6 +28,8 @@ TARGET_WEB ?= 0
 #   gcc - uses the GNU C Compiler
 COMPILER ?= ido
 $(eval $(call validate-option,COMPILER,ido gcc))
+
+ENABLE_OPENGL := 1
 
 # Automatic settings only for ports
 ifeq ($(TARGET_N64),0)
@@ -494,7 +496,7 @@ ifeq ($(ENABLE_OPENGL),1)
   GFX_LDFLAGS :=
   ifeq ($(TARGET_WINDOWS),1)
     GFX_CFLAGS  += $(shell sdl2-config --cflags) -DGLEW_STATIC
-    GFX_LDFLAGS += $(shell sdl2-config --libs) -lglew32 -lopengl32 -lwinmm -limm32 -lversion -loleaut32 -lsetupapi
+    GFX_LDFLAGS += $(shell sdl2-config --libs) -Llib -lpthread -lglew32 -lm -lglu32 -lsetupapi -ldinput8 -luser32 -lgdi32 -limm32 -lole32 -loleaut32 -lshell32 -lwinmm -lversion -luuid -lopengl32 -static
   endif
   ifeq ($(TARGET_LINUX),1)
     GFX_CFLAGS  += $(shell sdl2-config --cflags)

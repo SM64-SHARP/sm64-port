@@ -49,6 +49,10 @@ static GLuint opengl_vbo;
 static uint32_t frame_count;
 static uint32_t current_height;
 
+// TODO: Could move texture cache here
+static GLuint all_textures[1024];
+static size_t num_textures = 0;
+
 static bool gfx_opengl_z_is_from_0_to_1(void) {
     return false;
 }
@@ -399,7 +403,15 @@ static void gfx_opengl_shader_get_info(struct ShaderProgram *prg, uint8_t *num_i
 static GLuint gfx_opengl_new_texture(void) {
     GLuint ret;
     glGenTextures(1, &ret);
+    all_textures[num_textures++] = ret;
     return ret;
+}
+
+// fix memory leaks but introduce graphical glitches
+void clear_gl_textures()
+{
+    glDeleteTextures(num_textures, all_textures);
+    num_textures = 0;
 }
 
 static void gfx_opengl_select_texture(int tile, GLuint texture_id) {

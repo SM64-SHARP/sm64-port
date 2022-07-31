@@ -100,12 +100,32 @@ void produce_one_frame(void) {
     gfx_end_frame();
 }
 
+void play_audio(bool silent)
+{
+	if (silent)
+		audio_api = &audio_null;
+	else
+		audio_api = &audio_wasapi;
+
+	int samples_left = audio_api->buffered();
+	u32 num_audio_samples = samples_left < audio_api->get_desired_buffered() ? SAMPLES_HIGH : SAMPLES_LOW;
+	s16 audio_buffer[SAMPLES_HIGH * 2 * 2];
+	for (int i = 0; i < 2; i++) {
+		create_next_audio_buffer(audio_buffer + i * (num_audio_samples * 2), num_audio_samples);
+	}
+
+	audio_api->play((u8*)audio_buffer, 2 * num_audio_samples * 4);
+}
+
 static void on_fullscreen_changed(bool is_now_fullscreen) {
     configFullscreen = is_now_fullscreen;
 }
 
 void sm64_init()
 {
+	audio_wasapi.init();
+	audio_api = &audio_wasapi;
+
     static u64 pool[0x165000/8 / 4 * sizeof(void *)];
     main_pool_init(pool, pool + sizeof(pool) / sizeof(pool[0]));
     gEffectsMemoryPool = mem_pool_init(0x4000, MEMORY_POOL_LEFT);
@@ -123,6 +143,20 @@ void gfx_init_dummy()
     wm_api = &gfx_dummy_wm_api;
     rendering_api = &gfx_dummy_renderer_api;
     gfx_init(wm_api, rendering_api, "ste64", false);
+}
+
+void gfx_init_gl()
+{
+    wm_api = &gfx_dummy_wm_api;
+    rendering_api = &gfx_opengl_api;
+    gfx_init(wm_api, rendering_api, "ste64", false);
+}
+
+void gfx_init_external(struct GfxRenderingAPI* r_api)
+{
+    wm_api = &gfx_dummy_wm_api;
+    rendering_api = &gfx_opengl_api;
+    gfx_init(wm_api, r_api, "ste64", false);
 }
 
 void sm64_update(OSContPad input, bool render)

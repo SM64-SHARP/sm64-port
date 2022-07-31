@@ -97,16 +97,16 @@ public:
 
 static void ThrowIfFailed(HRESULT res) {
     if (FAILED(res)) {
-        throw res;
+        //throw res;
     }
 }
 
 bool audio_wasapi_init(void) {
-    try {
+    //try {
         ThrowIfFailed(CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_PPV_ARGS(&immdev_enumerator)));
-    } catch (HRESULT res) {
-        return false;
-    }
+    //} catch (HRESULT res) {
+    //    return false;
+    //}
 
     ThrowIfFailed(immdev_enumerator->RegisterEndpointNotificationCallback(new NotificationClient()));
 
@@ -116,7 +116,7 @@ bool audio_wasapi_init(void) {
 static bool audio_wasapi_setup_stream(void) {
     wasapi = WasapiState();
 
-    try {
+    //try {
         ThrowIfFailed(immdev_enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &wasapi.device));
         ThrowIfFailed(wasapi.device->Activate(IID_IAudioClient, CLSCTX_ALL, nullptr, IID_PPV_ARGS_Helper(&wasapi.client)));
 
@@ -136,10 +136,10 @@ static bool audio_wasapi_setup_stream(void) {
 
         wasapi.started = false;
         wasapi.initialized = true;
-    } catch (HRESULT res) {
-        wasapi = WasapiState();
-        return false;
-    }
+    //} catch (HRESULT res) {
+    //    wasapi = WasapiState();
+    //    return false;
+    //}
 
     return true;
 }
@@ -150,14 +150,14 @@ static int audio_wasapi_buffered(void) {
             return 0;
         }
     }
-    try {
+    //try {
         UINT32 padding;
         ThrowIfFailed(wasapi.client->GetCurrentPadding(&padding));
         return padding;
-    } catch (HRESULT res) {
-        wasapi = WasapiState();
-        return 0;
-    }
+    //} catch (HRESULT res) {
+    //    wasapi = WasapiState();
+    //    return 0;
+    //}
 }
 
 static int audio_wasapi_get_desired_buffered(void) {
@@ -171,7 +171,7 @@ static void audio_wasapi_play(const uint8_t *buf, size_t len) {
             return;
         }
     }
-    try {
+    //try {
         UINT32 frames = len / 4;
 
         UINT32 padding;
@@ -195,9 +195,9 @@ static void audio_wasapi_play(const uint8_t *buf, size_t len) {
             wasapi.started = true;
             ThrowIfFailed(wasapi.client->Start());
         }
-    } catch (HRESULT res) {
-        wasapi = WasapiState();
-    }
+    //} catch (HRESULT res) {
+    //    wasapi = WasapiState();
+    //}
 }
 
 struct AudioAPI audio_wasapi = {

@@ -292,6 +292,13 @@
 #define CAM_EVENT_START_END_WAVING    12
 #define CAM_EVENT_START_CREDITS       13
 
+struct OverrideCamera {
+    u8 enabled;
+    Vec3f pos;
+    Vec3f focus;
+    f32 roll;
+};
+
 /**
  * A copy of player information that is relevant to the camera.
  */
@@ -669,6 +676,7 @@ extern s32 gObjCutsceneDone;
 extern struct Camera *gCamera;
 #endif
 
+extern struct OverrideCamera gOverrideCamera;
 extern struct Object *gCutsceneFocus;
 extern struct Object *gSecondCameraFocus;
 extern u8 gRecentCutscene;

@@ -22,6 +22,8 @@
 #include "save_file.h"
 #include "level_table.h"
 #include "dialog_ids.h"
+#include "debug_box.h"
+#include "debug_rect.h"
 
 struct SpawnInfo gPlayerSpawnInfos[1];
 struct GraphNode *D_8033A160[0x100];
@@ -369,11 +371,15 @@ void render_game(void) {
     if (gCurrentArea != NULL && !gWarpTransition.pauseRendering) {
         geo_process_root(gCurrentArea->unk04, D_8032CE74, D_8032CE78, gFBSetColor);
 
+        //render_debug_boxes();
+        render_debug_rects();
+
         gSPViewport(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(&D_8032CF00));
 
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, BORDER_HEIGHT, SCREEN_WIDTH,
                       SCREEN_HEIGHT - BORDER_HEIGHT);
         render_hud();
+    
 
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         render_text_labels();

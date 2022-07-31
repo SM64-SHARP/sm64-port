@@ -15,6 +15,7 @@
 #include "gfx_window_manager_api.h"
 #include "gfx_rendering_api.h"
 #include "gfx_screen_config.h"
+#include "gfx_dummy.h"
 
 #define SUPPORT_CHECK(x) assert(x)
 
@@ -251,6 +252,11 @@ static struct ColorCombiner *gfx_lookup_or_create_color_combiner(uint32_t cc_id)
     struct ColorCombiner *comb = &color_combiner_pool[color_combiner_pool_size++];
     gfx_generate_cc(comb, cc_id);
     return prev_combiner = comb;
+}
+
+void reset_texture_cache()
+{
+    gfx_texture_cache.pool_pos = 0;
 }
 
 static bool gfx_texture_cache_lookup(int tile, struct TextureHashmapNode **n, const uint8_t *orig_addr, uint32_t fmt, uint32_t siz) {
@@ -1604,11 +1610,55 @@ static void gfx_sp_reset() {
     rsp.lights_changed = true;
 }
 
+
+
 void gfx_get_dimensions(uint32_t *width, uint32_t *height) {
     gfx_wapi->get_dimensions(width, height);
 }
 
+void gfx_init_rendering(struct GfxRenderingAPI *rapi) {
+    //gfx_dummy_wm_api
+    gfx_wapi = &gfx_dummy_wm_api;
+    gfx_rapi = rapi;
+    gfx_wapi->init("ste64", false);
+    gfx_rapi->init();
+    
+    // Used in the 120 star TAS
+    static uint32_t precomp_shaders[] = {
+        0x01200200,
+        0x00000045,
+        0x00000200,
+        0x01200a00,
+        0x00000a00,
+        0x01a00045,
+        0x00000551,
+        0x01045045,
+        0x05a00a00,
+        0x01200045,
+        0x05045045,
+        0x01045a00,
+        0x01a00a00,
+        0x0000038d,
+        0x01081081,
+        0x0120038d,
+        0x03200045,
+        0x03200a00,
+        0x01a00a6f,
+        0x01141045,
+        0x07a00a00,
+        0x05200200,
+        0x03200200,
+        0x09200200,
+        0x0920038d,
+        0x09200045
+    };
+    for (size_t i = 0; i < sizeof(precomp_shaders) / sizeof(uint32_t); i++) {
+        gfx_lookup_or_create_shader_program(precomp_shaders[i]);
+    }
+}
+
 void gfx_init(struct GfxWindowManagerAPI *wapi, struct GfxRenderingAPI *rapi, const char *game_name, bool start_in_fullscreen) {
+    //gfx_dummy_wm_api
     gfx_wapi = wapi;
     gfx_rapi = rapi;
     gfx_wapi->init(game_name, start_in_fullscreen);
@@ -1652,9 +1702,15 @@ struct GfxRenderingAPI *gfx_get_current_rendering_api(void) {
     return gfx_rapi;
 }
 
+void set_gfx_dimensions(int width, int height)
+{
+    gfx_current_dimensions.width = width;
+    gfx_current_dimensions.height = height;
+}
+
 void gfx_start_frame(void) {
     gfx_wapi->handle_events();
-    gfx_wapi->get_dimensions(&gfx_current_dimensions.width, &gfx_current_dimensions.height);
+    //gfx_wapi->get_dimensions(&gfx_current_dimensions.width, &gfx_current_dimensions.height);
     if (gfx_current_dimensions.height == 0) {
         // Avoid division by zero
         gfx_current_dimensions.height = 1;

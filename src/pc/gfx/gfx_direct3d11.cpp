@@ -339,14 +339,14 @@ static struct ShaderProgram *gfx_d3d11_create_and_load_new_shader(uint32_t shade
 
     if (FAILED(hr)) {
         MessageBox(gfx_dxgi_get_h_wnd(), (char *) error_blob->GetBufferPointer(), "Error", MB_OK | MB_ICONERROR);
-        throw hr;
+        //throw hr;
     }
 
     hr = d3d.D3DCompile(buf, len, nullptr, nullptr, nullptr, "PSMain", "ps_4_0_level_9_1", compile_flags, 0, ps.GetAddressOf(), error_blob.GetAddressOf());
 
     if (FAILED(hr)) {
         MessageBox(gfx_dxgi_get_h_wnd(), (char *) error_blob->GetBufferPointer(), "Error", MB_OK | MB_ICONERROR);
-        throw hr;
+        //throw hr;
     }
 
     struct ShaderProgramD3D11 *prg = &d3d.shader_program_pool[d3d.shader_program_pool_size++];

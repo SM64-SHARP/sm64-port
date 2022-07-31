@@ -5,6 +5,8 @@
 
 #include "engine/graph_node.h"
 
+extern float gMatrix[4][4];
+extern float gMatrixPerspective[4][4];
 extern struct GraphNodeRoot *gCurGraphNodeRoot;
 extern struct GraphNodeMasterList *gCurGraphNodeMasterList;
 extern struct GraphNodePerspective *gCurGraphNodeCamFrustum;

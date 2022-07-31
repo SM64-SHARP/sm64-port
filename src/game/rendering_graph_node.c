@@ -10,6 +10,7 @@
 #include "rendering_graph_node.h"
 #include "shadow.h"
 #include "sm64.h"
+#include "types.h"
 
 /**
  * This file contains the code that processes the scene graph for rendering.
@@ -232,6 +233,8 @@ static void geo_process_ortho_projection(struct GraphNodeOrthoProjection *node) 
     }
 }
 
+float gMatrixPerspective[4][4];
+
 /**
  * Process a perspective projection node.
  */
@@ -250,6 +253,14 @@ static void geo_process_perspective(struct GraphNodePerspective *node) {
 #endif
 
         guPerspective(mtx, &perspNorm, node->fov, aspect, node->near, node->far, 1.0f);
+        for (size_t i = 0; i < 4; i++)
+        {
+            for (size_t t = 0; t < 4; t++)
+            {
+                gMatrixPerspective[i][t] = mtx->m[i][t];
+            }
+        }
+
         gSPPerspNormalize(gDisplayListHead++, perspNorm);
 
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);
@@ -309,6 +320,8 @@ static void geo_process_switch(struct GraphNodeSwitchCase *node) {
     }
 }
 
+float gMatrix[4][4];
+
 /**
  * Process a camera node.
  */
@@ -332,6 +345,13 @@ static void geo_process_camera(struct GraphNodeCamera *node) {
     if (node->fnNode.node.children != 0) {
         gCurGraphNodeCamera = node;
         node->matrixPtr = &gMatStack[gMatStackIndex];
+        for (size_t i = 0; i < 4; i++)
+        {
+            for (size_t t = 0; t < 4; t++)
+            {
+                gMatrix[i][t] = gMatStack[gMatStackIndex][i][t];
+            }
+        }
         geo_process_node_and_siblings(node->fnNode.node.children);
         gCurGraphNodeCamera = NULL;
     }

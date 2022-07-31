@@ -583,7 +583,7 @@ HWND gfx_dxgi_get_h_wnd(void) {
 void ThrowIfFailed(HRESULT res) {
     if (FAILED(res)) {
         fprintf(stderr, "Error: 0x%08X\n", res);
-        throw res;
+        //throw res;
     }
 }
 
@@ -593,7 +593,7 @@ void ThrowIfFailed(HRESULT res, HWND h_wnd, const char *message) {
         sprintf(full_message, "%s\n\nHRESULT: 0x%08X", message, res);
         dxgi.showing_error = true;
         MessageBox(h_wnd, full_message, "Error", MB_OK | MB_ICONERROR);
-        throw res;
+        //throw res;
     }
 }
 

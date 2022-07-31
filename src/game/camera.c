@@ -177,6 +177,8 @@ struct CameraFOVStatus sFOVState;
 struct TransitionInfo sModeTransition;
 struct PlayerGeometry sMarioGeometry;
 struct Camera *gCamera;
+struct OverrideCamera gOverrideCamera;
+
 s16 unusedFreeRoamWallYaw;
 s16 sAvoidYawVel;
 s16 sCameraYawAfterDoorCutscene;
@@ -3521,6 +3523,13 @@ void create_camera(struct GraphNodeCamera *gc, struct AllocOnlyPool *pool) {
 void update_graph_node_camera(struct GraphNodeCamera *gc) {
     UNUSED u8 unused[8];
     UNUSED struct Camera *c = gc->config.camera;
+
+    if (gOverrideCamera.enabled) {
+        gc->rollScreen = gOverrideCamera.roll;
+        vec3f_copy(gc->pos, gOverrideCamera.pos);
+        vec3f_copy(gc->focus, gOverrideCamera.focus);
+        return;
+    }
 
     gc->rollScreen = gLakituState.roll;
     vec3f_copy(gc->pos, gLakituState.pos);
