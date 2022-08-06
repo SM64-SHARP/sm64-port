@@ -29,7 +29,7 @@ TARGET_WEB ?= 0
 COMPILER ?= ido
 $(eval $(call validate-option,COMPILER,ido gcc))
 
-ENABLE_OPENGL := 1
+#ENABLE_OPENGL := 1
 
 # Automatic settings only for ports
 ifeq ($(TARGET_N64),0)
@@ -216,6 +216,7 @@ ifeq ($(filter clean distclean,$(MAKECMDGOALS)),)
   $(info Version:        $(VERSION))
   $(info Microcode:      $(GRUCODE))
   $(info Target:         $(TARGET))
+  $(info Compiler:       $(COMPILER))
   ifeq ($(COMPARE),1)
     $(info Compare ROM:    yes)
   else
@@ -496,6 +497,7 @@ ifeq ($(ENABLE_OPENGL),1)
   GFX_LDFLAGS :=
   ifeq ($(TARGET_WINDOWS),1)
     GFX_CFLAGS  += $(shell sdl2-config --cflags) -DGLEW_STATIC
+	#GFX_LDFLAGS += $(shell sdl2-config --libs) -Llib -lpthread -lglew32 -lopengl32 -lwinmm -limm32 -lversion -loleaut32 -lsetupapi -static
     GFX_LDFLAGS += $(shell sdl2-config --libs) -Llib -lpthread -lglew32 -lm -lglu32 -lsetupapi -ldinput8 -luser32 -lgdi32 -limm32 -lole32 -loleaut32 -lshell32 -lwinmm -lversion -luuid -lopengl32 -static
   endif
   ifeq ($(TARGET_LINUX),1)
@@ -516,7 +518,7 @@ ifeq ($(ENABLE_DX12),1)
   PLATFORM_LDFLAGS += -lgdi32 -static
 endif
 
-GFX_CFLAGS += -DWIDESCREEN
+#GFX_CFLAGS += -DWIDESCREEN
 
 CC_CHECK := $(CC) -fsyntax-only -fsigned-char -Wall -Wextra -Wno-format-security -D_LANGUAGE_C $(DEF_INC_CFLAGS) $(PLATFORM_CFLAGS) $(GFX_CFLAGS)
 CFLAGS := $(OPT_FLAGS) -D_LANGUAGE_C $(DEF_INC_CFLAGS) $(PLATFORM_CFLAGS) $(GFX_CFLAGS) -fno-strict-aliasing -fwrapv -march=native -mfpmath=sse -msse2 -ffp-contract=off

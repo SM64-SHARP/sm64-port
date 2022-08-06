@@ -256,7 +256,8 @@ static struct ColorCombiner *gfx_lookup_or_create_color_combiner(uint32_t cc_id)
 
 void reset_texture_cache()
 {
-    gfx_texture_cache.pool_pos = 0;
+    //gfx_texture_cache.pool_pos = 0;
+    memset(&gfx_texture_cache, 0, sizeof gfx_texture_cache);
 }
 
 static bool gfx_texture_cache_lookup(int tile, struct TextureHashmapNode **n, const uint8_t *orig_addr, uint32_t fmt, uint32_t siz) {
