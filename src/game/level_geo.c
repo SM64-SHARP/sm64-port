@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "envfx_snow.h"
 #include "level_geo.h"
+#include "camera.h"
 
 /**
  * Geo function that generates a displaylist for environment effects such as
@@ -69,6 +70,12 @@ Gfx *geo_skybox_main(s32 callContext, struct GraphNode *node, UNUSED Mat4 *mtx) 
         struct GraphNodeCamera *camNode = (struct GraphNodeCamera *) gCurGraphNodeRoot->views[0];
         struct GraphNodePerspective *camFrustum =
             (struct GraphNodePerspective *) camNode->fnNode.node.parent;
+
+        if (gOverrideCamera.enabled) {
+            gLakituState.roll = gOverrideCamera.roll;
+            vec3f_copy(gLakituState.pos, gOverrideCamera.pos);
+            vec3f_copy(gLakituState.focus, gOverrideCamera.focus);
+        }
 
         gfx = create_skybox_facing_camera(0, backgroundNode->background, camFrustum->fov, gLakituState.pos[0],
                             gLakituState.pos[1], gLakituState.pos[2], gLakituState.focus[0],
