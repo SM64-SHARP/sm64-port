@@ -234,6 +234,8 @@ static void geo_process_ortho_projection(struct GraphNodeOrthoProjection *node) 
 }
 
 float gMatrixPerspective[4][4];
+float gMatrixPerspectiveOverride[4][4];
+u8 gOverridePerspectiveMatrix;
 s16 gOverrideFarClip = -1;
 
 /**
@@ -259,6 +261,18 @@ static void geo_process_perspective(struct GraphNodePerspective *node) {
 #endif
 
         guPerspective(mtx, &perspNorm, node->fov, aspect, node->near, node->far, 1.0f);
+
+        if(gOverridePerspectiveMatrix) 
+        {
+            for (size_t i = 0; i < 4; i++)
+            {
+                for (size_t t = 0; t < 4; t++)
+                {
+                    mtx->m[i][t] = gMatrixPerspectiveOverride[i][t];
+                }
+            }
+        }
+
         for (size_t i = 0; i < 4; i++)
         {
             for (size_t t = 0; t < 4; t++)
@@ -327,6 +341,8 @@ static void geo_process_switch(struct GraphNodeSwitchCase *node) {
 }
 
 float gMatrix[4][4];
+float gMatrixOverride[4][4];
+u8 gOverrideMatrix;
 
 /**
  * Process a camera node.
@@ -356,6 +372,17 @@ static void geo_process_camera(struct GraphNodeCamera *node) {
             for (size_t t = 0; t < 4; t++)
             {
                 gMatrix[i][t] = gMatStack[gMatStackIndex][i][t];
+            }
+        }
+        if(gOverrideMatrix) 
+        {
+            for (size_t i = 0; i < 4; i++)
+            {
+                for (size_t t = 0; t < 4; t++)
+                {
+                    gMatStack[gMatStackIndex][i][t] = gMatrixOverride[i][t];
+                    gMatrix[i][t] = gMatrixOverride[i][t];
+                }
             }
         }
         geo_process_node_and_siblings(node->fnNode.node.children);
@@ -740,6 +767,8 @@ static void geo_process_shadow(struct GraphNodeShadow *node) {
     }
 }
 
+u8 gOverrideHorizontalCulling;
+
 /**
  * Check whether an object is in view to determine whether it should be drawn.
  * This is known as frustum culling.
@@ -817,6 +846,11 @@ static s32 obj_is_in_view(struct GraphNodeObject *node, Mat4 matrix) {
     //  when converting the transformation matrix to a fixed point matrix.
     if (matrix[3][2] < -20000.0f - cullingRadius) {
         return FALSE;
+    }
+
+    if(gOverrideHorizontalCulling)
+    {
+        return TRUE;
     }
 
     // Check whether the object is horizontally in view

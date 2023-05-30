@@ -15,6 +15,11 @@ extern struct GraphNodeObject *gCurGraphNodeObject;
 extern struct GraphNodeHeldObject *gCurGraphNodeHeldObject;
 extern u16 gAreaUpdateCounter;
 extern s16 gOverrideFarClip;
+extern float gMatrixPerspectiveOverride[4][4];
+extern u8 gOverridePerspectiveMatrix;
+extern float gMatrixOverride[4][4];
+extern u8 gOverrideMatrix;
+extern u8 gOverrideHorizontalCulling;
 
 // after processing an object, the type is reset to this
 #define ANIM_TYPE_NONE                  0

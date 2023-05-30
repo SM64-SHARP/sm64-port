@@ -9,6 +9,7 @@
 #include "save_file.h"
 #include "segment2.h"
 #include "sm64.h"
+#include "camera.h"
 
 #ifndef TARGET_N64
 #define BETTER_SKYBOX_POSITION_PRECISION
@@ -259,6 +260,9 @@ void draw_skybox_tile_grid(Gfx **dlist, s8 background, s8 player, s8 colorIndex)
     for (row = 0; row < 3; row++) {
         for (col = 0; col < 3; col++) {
             s32 tileIndex = sSkyBoxInfo[player].upperLeftTile + row * SKYBOX_COLS + col;
+            if(gOverrideCamera.enabled && tileIndex >= SKYBOX_COLS * SKYBOX_ROWS){
+                tileIndex = 0;
+            }
             const u8 *const texture =
                 (*(SkyboxTexture *) segmented_to_virtual(sSkyboxTextures[background]))[tileIndex];
             Vtx *vertices = make_skybox_rect(tileIndex, colorIndex);
