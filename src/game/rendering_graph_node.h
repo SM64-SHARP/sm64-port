@@ -14,7 +14,7 @@ extern struct GraphNodeCamera *gCurGraphNodeCamera;
 extern struct GraphNodeObject *gCurGraphNodeObject;
 extern struct GraphNodeHeldObject *gCurGraphNodeHeldObject;
 extern u16 gAreaUpdateCounter;
-extern s16 gOverrideFarClip;
+extern f32 gOverrideFarClip;
 extern float gMatrixPerspectiveOverride[4][4];
 extern u8 gOverridePerspectiveMatrix;
 extern float gMatrixOverride[4][4];

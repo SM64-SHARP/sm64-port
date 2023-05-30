@@ -236,17 +236,12 @@ static void geo_process_ortho_projection(struct GraphNodeOrthoProjection *node) 
 float gMatrixPerspective[4][4];
 float gMatrixPerspectiveOverride[4][4];
 u8 gOverridePerspectiveMatrix;
-s16 gOverrideFarClip = -1;
+f32 gOverrideFarClip = -1;
 
 /**
  * Process a perspective projection node.
  */
 static void geo_process_perspective(struct GraphNodePerspective *node) {
-    if(gOverrideFarClip != -1)
-    {
-        node->far = gOverrideFarClip;
-    }
-
     if (node->fnNode.func != NULL) {
         node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node, gMatStack[gMatStackIndex]);
     }
@@ -260,7 +255,14 @@ static void geo_process_perspective(struct GraphNodePerspective *node) {
         f32 aspect = (f32) gCurGraphNodeRoot->width / (f32) gCurGraphNodeRoot->height;
 #endif
 
-        guPerspective(mtx, &perspNorm, node->fov, aspect, node->near, node->far, 1.0f);
+        if(gOverrideFarClip != -1)
+        {
+            guPerspective(mtx, &perspNorm, node->fov, aspect, node->near, gOverrideFarClip, 1.0f);
+        } 
+        else 
+        {
+            guPerspective(mtx, &perspNorm, node->fov, aspect, node->near, node->far, 1.0f);
+        }
 
         if(gOverridePerspectiveMatrix) 
         {
