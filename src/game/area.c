@@ -24,6 +24,7 @@
 #include "dialog_ids.h"
 #include "debug_box.h"
 #include "debug_rect.h"
+#include "hud.h"
 
 struct SpawnInfo gPlayerSpawnInfos[1];
 struct GraphNode *D_8033A160[0x100];
@@ -380,7 +381,7 @@ void render_game(void) {
                       SCREEN_HEIGHT - BORDER_HEIGHT);
         render_hud();
     
-        if(!gOverrideCamera.enabled) {
+        if(!gHideHud) {
             gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
             render_text_labels();
             do_cutscene_handler();

@@ -21,6 +21,8 @@ enum CameraHUDLut {
     GLYPH_CAM_ARROW_DOWN
 };
 
+extern u8 gHideHud;
+
 void set_hud_camera_status(s16 status);
 void render_hud(void);
 

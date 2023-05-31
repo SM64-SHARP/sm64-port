@@ -13,7 +13,6 @@
 #include "area.h"
 #include "save_file.h"
 #include "print.h"
-#include "camera.h"
 
 /* @file hud.c
  * This file implements HUD rendering and power meter animations.
@@ -57,6 +56,8 @@ s32 sPowerMeterVisibleTimer = 0;
 UNUSED static struct UnusedHUDStruct sUnusedHUDValues = { 0x00, 0x0A, 0x00 };
 
 static struct CameraHUD sCameraHUD = { CAM_STATUS_NONE };
+
+u8 gHideHud;
 
 /**
  * Renders a rgba16 16x16 glyph texture from a table list.
@@ -390,7 +391,7 @@ void render_hud_camera_status(void) {
 
     gSPDisplayList(gDisplayListHead++, dl_hud_img_begin);
 
-    if(gOverrideCamera.enabled) {
+    if(gHideHud) {
         render_hud_tex_lut(32768, 32768, (*cameraLUT)[GLYPH_CAM_CAMERA]);
     } else {
         render_hud_tex_lut(x, y, (*cameraLUT)[GLYPH_CAM_CAMERA]);
@@ -453,35 +454,38 @@ void render_hud(void) {
         create_dl_ortho_matrix();
 #endif
 
-        if (!gOverrideCamera.enabled && gCurrentArea != NULL && gCurrentArea->camera->mode == CAMERA_MODE_INSIDE_CANNON) {
-            render_hud_cannon_reticle();
-        }
+        if(!gHideHud)
+        {
+            if (gCurrentArea != NULL && gCurrentArea->camera->mode == CAMERA_MODE_INSIDE_CANNON) {
+                render_hud_cannon_reticle();
+            }
 
-        if (!gOverrideCamera.enabled && hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
-            render_hud_mario_lives();
-        }
+            if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
+                render_hud_mario_lives();
+            }
 
-        if (!gOverrideCamera.enabled && hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
-            render_hud_coins();
-        }
+            if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
+                render_hud_coins();
+            }
 
-        if (!gOverrideCamera.enabled && hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {
-            render_hud_stars();
-        }
+            if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {
+                render_hud_stars();
+            }
 
-        if (!gOverrideCamera.enabled && hudDisplayFlags & HUD_DISPLAY_FLAG_KEYS) {
-            render_hud_keys();
+            if (hudDisplayFlags & HUD_DISPLAY_FLAG_KEYS) {
+                render_hud_keys();
+            }
         }
 
         if (hudDisplayFlags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER) {
-            if(!gOverrideCamera.enabled)
+            if(!gHideHud)
             {
                 render_hud_power_meter();
             }
             render_hud_camera_status();
         }
 
-        if (!gOverrideCamera.enabled && hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
+        if (!gHideHud && hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
             render_hud_timer();
         }
     }
