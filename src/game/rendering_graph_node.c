@@ -812,6 +812,11 @@ static s32 obj_is_in_view(struct GraphNodeObject *node, Mat4 matrix) {
         return FALSE;
     }
 
+    if(gOverrideHorizontalCulling)
+    {
+        return TRUE;
+    }
+
     geo = node->sharedChild;
 
     // ! @bug The aspect ratio is not accounted for. When the fov value is 45,
@@ -848,11 +853,6 @@ static s32 obj_is_in_view(struct GraphNodeObject *node, Mat4 matrix) {
     //  when converting the transformation matrix to a fixed point matrix.
     if (matrix[3][2] < -20000.0f - cullingRadius) {
         return FALSE;
-    }
-
-    if(gOverrideHorizontalCulling)
-    {
-        return TRUE;
     }
 
     // Check whether the object is horizontally in view
