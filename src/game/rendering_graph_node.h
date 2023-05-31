@@ -19,7 +19,7 @@ extern float gMatrixPerspectiveOverride[4][4];
 extern u8 gOverridePerspectiveMatrix;
 extern float gMatrixOverride[4][4];
 extern u8 gOverrideMatrix;
-extern u8 gOverrideHorizontalCulling;
+extern u8 gOverrideCulling;
 
 // after processing an object, the type is reset to this
 #define ANIM_TYPE_NONE                  0

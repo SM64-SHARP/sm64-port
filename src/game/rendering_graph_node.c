@@ -769,7 +769,7 @@ static void geo_process_shadow(struct GraphNodeShadow *node) {
     }
 }
 
-u8 gOverrideHorizontalCulling;
+u8 gOverrideCulling;
 
 /**
  * Check whether an object is in view to determine whether it should be drawn.
@@ -812,7 +812,7 @@ static s32 obj_is_in_view(struct GraphNodeObject *node, Mat4 matrix) {
         return FALSE;
     }
 
-    if(gOverrideHorizontalCulling)
+    if(gOverrideCulling)
     {
         return TRUE;
     }
