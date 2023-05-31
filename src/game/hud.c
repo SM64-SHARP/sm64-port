@@ -391,7 +391,7 @@ void render_hud_camera_status(void) {
     gSPDisplayList(gDisplayListHead++, dl_hud_img_begin);
 
     if(gOverrideCamera.enabled) {
-        render_hud_tex_lut(x, y, (*cameraLUT)[GLYPH_CAM_CAMERA]);
+        render_hud_tex_lut(32768, 32768, (*cameraLUT)[GLYPH_CAM_CAMERA]);
     } else {
         render_hud_tex_lut(x, y, (*cameraLUT)[GLYPH_CAM_CAMERA]);
 
